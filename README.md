@@ -342,6 +342,8 @@ iface eth0 inet static
 	gateway 10.26.3.200
         up echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
+> notes : lakukan konfigurasi berikut di node Heiter sebagai DNS Server
+
 - 1. #### Melakukan konfigurasi pada `/etc/bind/named.conf.local`
         ```
         echo 'zone "riegel.canyon.d09.com" {
