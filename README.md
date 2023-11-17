@@ -40,4 +40,4 @@ Buat topologi baru sesuai dengan peta topologi jaringan dibawah ini.
 ``` js
 danielcristh0/debian-buster:1.1
 ```
-![topologi](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/3694c2cf7383e45e3205bfa39b4304a13496177d/src/no%201.png)
+![topologi](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/topologi.png)
