@@ -616,8 +616,35 @@ ab -n 200 -c 10 http://www.granz.channel.d09.com/
 	}
   ```
   Hasil:
+# Nomor 9
+Dengan menggunakan algoritma Round Robin, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 100 request dengan 10 request/second, kemudian tambahkan grafiknya pada grimoire. 
 
+#### Melakukan testing dengan menjalankan perintah berikut di salah satu client.
+```
+ab -n 100 -c 10 http://www.granz.channel.d09.com/ 
+```
+- 1. #### Untuk 3 worker cukup jalankan Load Balancer dan semua worker seperti biasa.
+  Hasil:
 
+- 2. #### Untuk 2 worker matikan salah 1 worker dengan ```service nginx stop```.
+  Hasil:
 
+- 3. #### Untuk 1 worker matikan 2 worker dengan ```service nginx stop```.
+  Hasil:
+
+# Nomor 10
+Selanjutnya coba tambahkan konfigurasi autentikasi di LB dengan dengan kombinasi username: “netics” dan password: “ajkyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/rahasisakita/
+
+- 1. ### Tambahkan command berikut di location pada conf load balancer
+  ```
+  auth_basic "Administrators Area";
+  auth_basic_user_file /etc/nginx/rahasiakita;
+  ```
+- 2. ### Lakukan command berikut di Load Balancer:
+  ```
+  mkdir /etc/nginx/rahasisakita
+  htpasswd -c /etc/nginx/rahasisakita/htpasswd netics
+  ```
+Hasil:
 
 
