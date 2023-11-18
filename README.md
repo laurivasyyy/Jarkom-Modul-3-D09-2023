@@ -7,7 +7,7 @@
 # Daftar Isi
 - [Pre-requisites](#pre-requisites)
   - [1. Membuat Topologi Baru](#topologi)
-  - [2. Network Configuration](#config)
+  - [2. Network Configuration](#configuration)
   - [3. Instalasi dan Konfigurasi](#install)
     - [DHCP Relay](#dhcp)
     - [DHCP Server](#dhcp-server)
@@ -17,9 +17,8 @@
     - [Worker PHP](#worker-php)
     - [Worker Laravel](#worker-laravel)
     - [Client](#client)
-- [Nomor 0](#0)
-- [Nomor 1](#1)
-- [Nomor 2-5](#2-5)
+- [Nomor 0](#nomor-0)
+- [Nomor 2-5](#nomor2-5)
 - [Nomor 6](#6)
 - [Nomor 7](#7)
 - [Nomor 8](#8)
@@ -227,18 +226,7 @@ iface eth0 inet dhcp
     ```
     echo 'INTERFACESv4="eth0"' > /etc/default/isc-dhcp-server
     ```
-- #### Melakukan Konfigurasi pada `/etc/dhcp/dhcpd.conf`
-    ```
-    subnet 'NID' netmask 'Netmask' {
-        range 'IP_Awal' 'IP_Akhir';
-        range 'IP_Awal' 'IP_Akhir';
-        option routers 'iP_Gateway';
-        option broadcast-address 'IP_Broadcast';
-        option domain-name-servers 'IP-DNS-SERVER';
-        default-lease-time 'Waktu';
-        max-lease-time 'Waktu';
-    }
-    ```
+
 - #### Restart Service isc-dhcp-server
     ``` js
     service isc-dhcp-server restart
@@ -321,7 +309,7 @@ apt install apache2-utils -y
 ```
 
 # Nomor 0
-Kali ini, kalian diminta untuk melakukan register domain berupa `riegel.canyon.d09.com` untuk worker Laravel dan `granz.channel.d09.com` untuk worker PHP (0) mengarah pada worker yang memiliki IP [10.26].x.1.
+Kali ini, kalian diminta untuk melakukan register domain berupa `riegel.canyon.d09.com` untuk worker Laravel dan `granz.channel.d09.com` untuk worker PHP (0) mengarah pada worker yang memiliki IP [IP Prefix].x.1.
 
 #### **a. Frieren (Laravel Worker)**
 ```
@@ -400,5 +388,191 @@ iface eth0 inet static
 
 ### Hasil Testing pada Client Ritcher :
 ![no-1](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no%201.png)
+
+# Nomor 2-5
+- Client yang melalui Switch3 mendapatkan range IP dari [prefix IP].3.16 - [prefix IP].3.32 dan [prefix IP].3.64 - [prefix IP].3.80 **(2)**
+- Client yang melalui Switch4 mendapatkan range IP dari [prefix IP].4.12 - [prefix IP].4.20 dan [prefix IP].4.160 - [prefix IP].4.168 **(3)**
+- Client mendapatkan DNS dari Heiter dan dapat terhubung dengan internet melalui DNS tersebut **(4)**
+- Lama waktu DHCP server meminjamkan alamat IP kepada Client yang melalui Switch3 selama 3 menit sedangkan pada client yang melalui Switch4 selama 12 menit. Dengan waktu maksimal dialokasikan untuk peminjaman alamat IP selama 96 menit **(5)**
+
+| **No** | **Parameter Jaringan**                             | **Keterangan**                                                                                                                                                                                                                                                                                         |
+| ------ | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1      | `subnet 'NID'`                                     | karena interface yang dipilih adalah `eth0` dengan IP 10.26.x.x, maka NID subnetnya adalah `10.26.1.0`                                                                                                                                                                                                                                                                                 |
+| 2      | `netmask 'Netmask`                                 | Netmask pada subnet dapat dilihat pada konfigurasi network router `255.255.255.0`                                                                                                                                                                                                                                                                                   |
+| 3      | `range 'IP_Awal' 'IP_Akhir'`                       | **Sesuaikan dengan soal**                                                                                                                                                                                                                              |
+| 4      | `option routers 'Gateway'`                         | IP gateway dari router menuju client sesuai konfigurasi subnet **(cek config aura)**                                                                                                                                                                                                                               |
+| 5      | `option broadcast-address 'IP_Broadcast'`          | IP broadcast pada subnet `10.26.x.255`                                                                                                                                                                                                                                                                               |
+| 6      | `option domain-name-servers 'DNS_yang_diinginkan'` | IP DNS Server                                                                                                                                                                                                                                         |
+| 7      | `default-lease-time 'Waktu'`                       | Lama waktu DHCP server meminjamkan `IP Address` kepada client, dalam satuan detik. **(sesuaikan dengan soal)**                                                                                                                                                                                                     |
+| 8      | `max-lease-time 'Waktu'`                           | Waktu maksimal yang di alokasikan untuk peminjaman IP oleh DHCP server ke client dalam satuan detik.  **(sesuaikan dengan soal)**                                                                                                                                                                                |
+
+- #### Sesuaikan Konfigurasi pada `/etc/dhcp/dhcpd.conf` dengan soal, gunakan tabel diatas untuk mempermudah anda dalam memahami setiap parameter jaringan yang ada.
+
+```
+echo 'subnet 10.26.1.0 netmask 255.255.255.0 {
+}
+
+subnet 10.26.2.0 netmask 255.255.255.0 {
+}
+
+subnet 10.26.3.0 netmask 255.255.255.0 {
+    range 10.26.3.16 10.26.3.32;
+    range 10.26.3.64 10.26.3.80;
+    option routers 10.26.3.0;
+    option broadcast-address 10.26.3.255;
+    option domain-name-servers 10.26.1.3;
+    default-lease-time 180;
+    max-lease-time 5760;
+}
+
+subnet 10.26.4.0 netmask 255.255.255.0 {
+    range 10.26.4.12 10.26.4.20;
+    range 10.26.4.160 10.26.4.168;
+    option routers 10.26.4.0;
+    option broadcast-address 10.26.4.255;
+    option domain-name-servers 10.26.1.2;
+    default-lease-time 720;
+    max-lease-time 5760;
+}' > /etc/dhcp/dhcpd.conf
+```
+```
+service isc-dhcp-server start
+```
+
+### Hasil Testing pada Client Ritcher dan Sein:
+![ritcher](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no%204%20-%20ritcher.png)
+![sein](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no%204%20-%20sein.png)
+
+# Nomor 6
+Pada masing-masing worker PHP, lakukan konfigurasi virtual host untuk website [berikut](https://drive.google.com/uc?export=download&id=1ViSkRq7SmwZgdK64eRbr5Fm1EGCTPrU1) dengan menggunakan php 7.3. (6)
+
+- 1. #### Melakukan download dan unzip file di semua worker
+        ```
+        wget -O '/var/www/granz.channel.d09.com' 'https://drive.google.com/uc?export=download&id=1ViSkRq7SmwZgdK64eRbr5Fm1EGCTPrU1'
+        unzip -o /var/www/granz.channel.d09.com -d /var/www/
+        rm /var/www/granz.channel.d09.com
+        mv /var/www/modul-3 /var/www/granz.channel.d09.com
+        ```
+- 2. #### Membuat symlink untuk `granz.channel.d09.com`
+        ```
+        cp /etc/nginx/sites-available/default /etc/nginx/sites-available/granz.channel.d09.com
+        ln -s /etc/nginx/sites-available/granz.channel.d09.com /etc/nginx/sites-enabled/
+        rm /etc/nginx/sites-enabled/default
+        ```
+- 3. #### Melakukan konfigurasi pada `/etc/nginx/sites-available/granz.channel.d09.com`
+        ```
+        echo ' server {
+
+            listen 80;
+
+            root /var/www/granz.channel.d09.com;
+
+            index index.php index.html index.htm;
+            server_name _;
+
+            location / {
+                    try_files $uri $uri/ /index.php?$query_string;
+            }
+
+            # pass PHP scripts to FastCGI server
+            location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+            }
+
+        location ~ /\.ht {
+                    deny all;
+            }
+
+            error_log /var/log/nginx/jarkom_error.log;
+            access_log /var/log/nginx/jarkom_access.log;
+        }' > /etc/nginx/sites-available/granz.channel.d09.com
+        ```
+- 4. #### Melakukan testing pada semua worker
+        ```
+        lynx localhost
+        ```
+
+Hasil testing pada worker Fern dan Lawine :
+
+![fern](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no%206%20-%20fern.png) 
+![lawine](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no%206%20-%20lawine.png)
+
+# Nomor 7
+Kepala suku dari Bredt Region memberikan resource server sebagai berikut:
+- a. Lawine, 4GB, 2vCPU, dan 80 GB SSD.
+- b. Linie, 2GB, 2vCPU, dan 50 GB SSD.
+- c. Lugner 1GB, 1vCPU, dan 25 GB SSD.
+
+aturlah agar Eisen dapat bekerja dengan maksimal, lalu lakukan testing dengan 1000 request dan 100 request/second. (7)
+
+- 1. #### Edit konfigurasi pada `/etc/bind/jarkom/riegel.canyon.d09.com` dan `/etc/bind/jarkom/granz.channel.d09.com` yang ada pada Heiter (DNS Server) agar mengarahkan domain ke IP Eisen (Load Balancer).
+        ```
+        echo ';
+        ; BIND data file for local loopback interface
+        ;
+        $TTL    604800
+        @       IN      SOA     riegel.canyon.d09.com. root.riegel.canyon.d09.com. (
+                                2023111401      ; Serial
+                                604800         ; Refresh
+                                86400         ; Retry
+                                2419200         ; Expire
+                                604800 )       ; Negative Cache TTL
+        ;
+        @       IN      NS      riegel.canyon.d09.com.
+        @       IN      A       10.26.2.2    ; IP Load Balancer
+        www     IN      CNAME   riegel.canyon.d09.com.' > /etc/bind/jarkom/riegel.canyon.d09.com
+        ```
+        ```
+        echo '
+        ; BIND data file for local loopback interface
+        ;
+        $TTL    604800
+        @       IN      SOA     granz.channel.d09.com. root.granz.channel.d09.com. (
+                                2023111401      ; Serial
+                                604800         ; Refresh
+                                86400         ; Retry
+                                2419200         ; Expire
+                                604800 )       ; Negative Cache TTL
+        ;
+        @       IN      NS      granz.channel.d09.com.
+        @       IN      A       10.26.2.2   ; IP Load Balancer
+        www     IN      CNAME   granz.channel.d09.com.' > /etc/bind/jarkom/granz.channel.d09.com
+        ```
+- 2. #### Melakukan konfigurasi pada node Eisen (Load Balancer).
+        ``` 
+        cp /etc/nginx/sites-available/default /etc/nginx/sites-available/lb
+
+        echo ' upstream worker {
+            server 10.26.3.1; # IP Lugner
+            server 10.26.3.2; # Ip Linie
+            server 10.26.3.3; # IP Lawine
+        }
+
+        server {
+            listen 80;
+            server_name granz.channel.d09.com www.granz.channel.d09.com;
+
+            location / {
+            proxy_pass http://worker;
+            }
+        } ' > /etc/nginx/sites-available/lb
+
+        ln -s /etc/nginx/sites-available/lb /etc/nginx/sites-enabled/
+        rm /etc/nginx/sites-enabled/default
+
+        service nginx restart
+        ```
+- 3. #### Melakukan testing dengan menjalankan perintah berikut di salah satu client.
+        ```
+        ab -n 1000 -c 100 http://www.granz.channel.d09.com/
+        ```
+
+Hasil testing pada node Revolte (client) :
+> Request per second : 650.54 [#/sec] (mean)
+
+![no7](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no%207%20-%20revolte.png)
+
+
 
 
