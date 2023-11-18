@@ -573,6 +573,51 @@ Hasil testing pada node Revolte (client) :
 
 ![no7](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no%207%20-%20revolte.png)
 
+# Nomor 8
+Karena diminta untuk menuliskan grimoire, buatlah analisis hasil testing dengan 200 request dan 10 request/second masing-masing algoritma Load Balancer dengan ketentuan sebagai berikut:
+a. Nama Algoritma Load Balancer
+b. Report hasil testing pada Apache Benchmark
+c. Grafik request per second untuk masing masing algoritma. 
+d. Analisis
+
+#### Melakukan testing dengan menjalankan perintah berikut di salah satu client.
+```
+ab -n 200 -c 10 http://www.granz.channel.d09.com/ 
+```
+- ### Round Robin: Default algoritma untuk load balancer adalah round robin, sehingga tidak perlu menambahkan apa-apa di upstream.
+  Hasil:
+- ### Least Conn:
+  ```
+  upstream php {
+  	least_conn;
+ 	server 10.26.3.1; #IP Lugner
+ 	server 10.26.3.2; #IP Linie
+    	server 10.26.3.3; #IP Lawine
+	}
+  ```
+  Hasil:
+- ### IP Hash:
+  ```
+  upstream php {
+  	ip_hash;
+ 	server 10.26.3.1; #IP Lugner
+ 	server 10.26.3.2; #IP Linie
+    	server 10.26.3.3; #IP Lawine
+	}
+  ```
+  Hasil:
+- ### Generic Hash:
+  ```
+  upstream php {
+  	hash $request_uri consistent;
+ 	server 10.26.3.1; #IP Lugner
+ 	server 10.26.3.2; #IP Linie
+    	server 10.26.3.3; #IP Lawine
+	}
+  ```
+  Hasil:
+
+
 
 
 
