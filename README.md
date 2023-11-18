@@ -647,4 +647,64 @@ Selanjutnya coba tambahkan konfigurasi autentikasi di LB dengan dengan kombinasi
   ```
 Hasil:
 
+# Nomor 11
+Lalu buat untuk setiap request yang mengandung /its akan di proxy passing menuju halaman https://www.its.ac.id.
 
+- 1. ### Tambahkan location baru dengan path /its
+  ``` 
+  location /its {
+        proxy_pass https://www.its.ac.id;
+        auth_basic "Administrators Area";
+        auth_basic_user_file /etc/nginx/rahasiakita;
+  }
+  ```
+- 2. ### Testing dengan penambahan /its pada url
+  ```
+  lynx www.granz.channel.d09.com/its
+  ```
+  Hasil:
+
+# Nomor 12
+Selanjutnya LB ini hanya boleh diakses oleh client dengan IP [Prefix IP].3.69, [Prefix IP].3.70, [Prefix IP].4.167, dan [Prefix IP].4.168.
+
+- 1. ### Tambahkan syntax berikut kedalam location di load balancer
+  ```
+  location / {
+    allow 10.26.3.69;
+    allow 10.26.3.70;
+    allow 10.26.4.167;
+    allow 10.26.4.168;
+    deny all;
+  }
+  ```
+  Hasil:
+
+# Nomor 13
+Semua data yang diperlukan, diatur pada Denken dan harus dapat diakses oleh Frieren, Flamme, dan Fern.
+
+- 1. ### Tambahkan conf berikut kedalam mysql.conf di denken
+  ```
+  [client-server]
+
+  !includedir /etc/mysql/conf.d/
+  !includedir /etc/mysql/mariadb.conf.d/
+
+  [mysqld]
+  skip-networking=0
+  skip-bind-address
+  ```
+
+- 2. ### Buat script.sql dan tambahkan syntax sql berikut
+  ```
+  CREATE USER '\''kelompokd09'\''@'\''%'\'' IDENTIFIED BY '\''passwordd09'\''; 
+  CREATE USER '\''kelompokd09'\''@'\''localhost'\'' IDENTIFIED BY '\''passwordd09'\''; 
+  CREATE DATABASE IF NOT EXISTS dbkelompokd09; 
+  GRANT ALL PRIVILEGES ON *.* TO '\''kelompokd09'\''@'\''%'\'';  
+  GRANT ALL PRIVILEGES ON *.* TO '\''kelompokd09'\''@'\''localhost'\''; 
+  FLUSH PRIVILEGES;
+  ```
+
+- 3. ### Jalankan command berikut untuk execute script.sql
+  ```
+  mysql < script.sql
+  ```
