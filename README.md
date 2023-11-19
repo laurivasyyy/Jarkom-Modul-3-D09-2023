@@ -817,3 +817,172 @@ Frieren, Flamme, dan Fern memiliki Riegel Channel sesuai dengan quest guide beri
   php artisan key:generate
   php artisan jwt:secret
   ```
+- 6. ### Tambahkan conf nginx berikut
+  ```
+  server {
+    listen 80;
+    root /var/www/laravel-praktikum-jarkom/public;
+    index index.php index.html index.htm;
+    server_name _;
+    
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    # pass PHP scripts to FastCGI server
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.0-fpm.sock;
+    }
+    location ~ /\.ht {
+        deny all;   
+    }
+    error_log /var/log/nginx/granz_error.log;
+    access_log /var/log/nginx/granz_access.log;
+  }
+  ```
+- 7. ### Lalu lakukan testing salah satu worker di client dengan lynx
+  ```
+  lynx http://10.26.4.1
+  ```
+  Hasil:
+
+# Nomor 15
+Riegel Channel memiliki beberapa endpoint yang harus ditesting sebanyak 100 request dengan 10 request/second. Tambahkan response dan hasil testing pada grimoire.
+POST /auth/register:
+
+- 1. ### Buat file json yang menyimpan data kolom yang diperlukan database
+  ```
+  {
+    "username": "jono",
+    "password": "Jokopass"
+  }
+  ```
+- 2. ### Lalu lakukan curl salah satu worker pada client untuk mendapatkan response
+  ```
+  curl -H "Content-Type:application/json" -X POST -d @register.json http://10.26.4.1:80/api/auth/register
+  ```
+- 3. ### Testing apache benchmark dengan syntax berikut
+  ```
+  ab -n 100 -c 10 -p register.json -T application/json http://10.26.4.1/api/auth/register
+  ```
+  Hasil:
+
+# Nomor 16
+POST /auth/login:
+
+- 1. ### Gunakan file json untuk register untuk melakukan login menggunakan curl untuk mendapatkan response
+  ```
+  curl -H "Content-Type:application/json" -X POST -d @register.json http://10.26.4.1:80/api/auth/login
+  ```
+- 2. ### Testing apache benchmark dengan syntax berikut
+  ```
+  ab -n 100 -c 10 -p register.json -T application/json http://10.26.4.1:80/api/auth/login
+  ```
+  Hasil:
+
+# Nomor 17
+GET /me:
+
+- 1. ### Lakukan curl dan simpan response di dalam file txt
+  ```
+  curl -H "Content-Type:application/json" -X POST -d @register.json http://10.26.4.1:80/api/auth/login > login_output.txt
+  ```
+- 2. ### Simpan token dari response ke dalam variable
+  ```
+  token=$(cat login_output.txt | jq -r '.token')
+  ```
+- 3. ### Lakukan curl dengan syntax berikut untuk mendapatkan response
+  ```
+  curl -X GET -H "Content-Type:application/json" -H "Authorization:Bearer $token" http://10.26.4.1:80/api/me
+  ```
+  Hasil:
+
+# Nomor 18
+Untuk memastikan ketiganya bekerja sama secara adil untuk mengatur Riegel Channel maka implementasikan Proxy Bind pada Eisen untuk mengaitkan IP dari Frieren, Flamme, dan Fern.
+
+- 1. ### Tambahkan conf upstream di load balancer untuk larvel worker
+  ```
+  upstream laravel {
+ 	server 10.26.4.1; #IP Friere
+ 	server 10.26.4.2; #IP Flame
+    server 10.26.4.3; #IP Frern
+  }
+  ```
+- 2. ### Tambahan proxy_bind dengan ip load balancer di location yang mengarah ke upstream laravel
+  ```
+  location / {
+  	proxy_bind 10.26.2.2;
+        proxy_pass http://laravel;
+        proxy_set_header    X-Real-IP $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header    Host $http_host;
+  }
+  ```
+- 3. ### Lakukan testing apache benchmark. Berikut contoh untuk testing login
+  ```
+  ab -n 100 -c 10 -p register.json -T application/json http://www.riegel.canyon.d09.com/api/auth/login
+  ```
+  Hasil:
+  
+# Nomor 19
+Untuk meningkatkan performa dari Worker, coba implementasikan PHP-FPM pada Frieren, Flamme, dan Fern. Untuk testing kinerja naikkan 
+- pm.max_children
+- pm.start_servers
+- pm.min_spare_servers
+- pm.max_spare_servers
+sebanyak tiga percobaan dan lakukan testing sebanyak 100 request dengan 10 request/second kemudian berikan hasil analisisnya pada Grimoire.
+
+- 1. ### Untuk mengatur conf php fpm bisa menggunakan syntax berikut untuk merubah config di dalam /etc/php/8.0/fpm/pool.d/www.conf
+  ```
+        echo '[www]
+	user = www-data
+	group = www-data
+	listen = /run/php/php8.0-fpm.sock
+	listen.owner = www-data
+	listen.group = www-data
+	php_admin_value[disable_functions] = exec,passthru,shell_exec,system
+	php_admin_flag[allow_url_fopen] = off
+	
+	; Choose how the process manager will control the number of child processes.
+	
+	pm = dynamic
+	pm.max_children = 5
+	pm.start_servers = 2
+	pm.min_spare_servers = 1
+	pm.max_spare_servers = 3' > /etc/php/8.0/fpm/pool.d/www.conf
+  ```
+- 2. ### Lalu restart php fpm
+  ```
+  service php8.0-fpm restart
+  ```
+- 3. ### Lakukan testing apache benchmark. Berikut contoh untuk testing login
+  ```
+  ab -n 100 -c 10 -p register.json -T application/json http://www.riegel.canyon.d09.com/api/auth/login
+  ```
+  
+Berikut adalah hasil yang didapatkan dari 3 script pengaturan:
+Script 1
+Hasil:
+Script 2
+Hasil:
+Script 3     
+Hasil:
+
+# Nomor 20
+Nampaknya hanya menggunakan PHP-FPM tidak cukup untuk meningkatkan performa dari worker maka implementasikan Least-Conn pada Eisen. Untuk testing kinerja dari worker tersebut dilakukan sebanyak 100 request dengan 10 request/second.
+
+- 1. ### Tambahkan ```least_conn``` di upstream laravel pada conf load balancer untuk membuat upstream tersebut menggunakan algoritma least connection
+  ```
+  upstream laravel {
+    least_conn;
+    server 10.26.4.1; #IP Friere
+    server 10.26.4.2; #IP Flame
+    server 10.26.4.3; #IP Frern
+  }
+  ```
+
+- 2. ### Testing pada apache benchmark
+  ```
+  ab -n 100 -c 10 -p register.json -T application/json http://www.riegel.canyon.d09.com/api/auth/login
+  ```
+Hasil:
