@@ -649,7 +649,10 @@ Selanjutnya coba tambahkan konfigurasi autentikasi di LB dengan dengan kombinasi
   htpasswd -c -b /etc/nginx/rahasiakita netics ajkd09
   ```
 Hasil:
-
+Sebelum masuk kedalam url ```www.granz.channel.d09.com``` akan muncul halaman untuk meminta username dan password
+![no_10_auth](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_10_auth.png)
+Setelah autentikasi
+![no_10_after_auth](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_10_after_auth.png)
 # Nomor 11
 Lalu buat untuk setiap request yang mengandung /its akan di proxy passing menuju halaman https://www.its.ac.id.
 
@@ -666,6 +669,7 @@ Lalu buat untuk setiap request yang mengandung /its akan di proxy passing menuju
   lynx www.granz.channel.d09.com/its
   ```
   Hasil:
+  ![no_11](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_11.png)
 
 # Nomor 12
 Selanjutnya LB ini hanya boleh diakses oleh client dengan IP [Prefix IP].3.69, [Prefix IP].3.70, [Prefix IP].4.167, dan [Prefix IP].4.168.
@@ -681,7 +685,13 @@ Selanjutnya LB ini hanya boleh diakses oleh client dengan IP [Prefix IP].3.69, [
   }
   ```
   Hasil:
-
+  Client sein dengan ip 10.26.4.167
+  ![ip_sein](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/ip_sein.png)
+  ![no_12_allow](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_12_allow.png)
+  
+  Client stark dengan ip 10.26.4.14
+  ![ip_stark](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/ip_stark.png)
+  ![no_12_deny](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_12_deny.png)
 # Nomor 13
 Semua data yang diperlukan, diatur pada Denken dan harus dapat diakses oleh Frieren, Flamme, dan Fern.
 
@@ -711,7 +721,8 @@ Semua data yang diperlukan, diatur pada Denken dan harus dapat diakses oleh Frie
   ```
   mysql < script.sql
   ```
-
+Hasil:
+![no_13](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_13.png)
 # Nomor 14
 Frieren, Flamme, dan Fern memiliki Riegel Channel sesuai dengan quest guide berikut. Jangan lupa melakukan instalasi PHP8.0 dan Composer.
 
@@ -848,7 +859,7 @@ Frieren, Flamme, dan Fern memiliki Riegel Channel sesuai dengan quest guide beri
   lynx http://10.26.4.1
   ```
   Hasil:
-
+  ![no_14](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_14.png)
 # Nomor 15
 Riegel Channel memiliki beberapa endpoint yang harus ditesting sebanyak 100 request dengan 10 request/second. Tambahkan response dan hasil testing pada grimoire.
 POST /auth/register:
@@ -935,7 +946,7 @@ Untuk memastikan ketiganya bekerja sama secara adil untuk mengatur Riegel Channe
   ab -n 100 -c 10 -p register.json -T application/json http://www.riegel.canyon.d09.com/api/auth/login
   ```
   Hasil:
-  
+  ![no_18](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_18.png)
 # Nomor 19
 Untuk meningkatkan performa dari Worker, coba implementasikan PHP-FPM pada Frieren, Flamme, dan Fern. Untuk testing kinerja naikkan 
 - pm.max_children
