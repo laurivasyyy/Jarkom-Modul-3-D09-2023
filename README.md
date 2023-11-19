@@ -653,7 +653,8 @@ Selanjutnya coba tambahkan konfigurasi autentikasi di LB dengan dengan kombinasi
   htpasswd -c -b /etc/nginx/rahasiakita netics ajkd09
   ```
 Hasil:
-Sebelum masuk kedalam url ```www.granz.channel.d09.com``` akan muncul halaman untuk meminta username dan password
+> notes: karena nantinya kami memindahkan location untuk upstream php ke /php maka untuk mengakses load balancer untuk php worker menggunakan www.granz.channel.d09.com/php
+Sebelum masuk kedalam url ```www.granz.channel.d09.com/php``` akan muncul halaman untuk meminta username dan password
 ![no_10_auth](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_10_auth.png)
 Setelah autentikasi
 ![no_10_after_auth](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_10_after_auth.png)
