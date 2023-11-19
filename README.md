@@ -625,13 +625,16 @@ ab -n 100 -c 10 http://www.granz.channel.d09.com/
 ```
 - 1. #### Untuk 3 worker cukup jalankan Load Balancer dan semua worker seperti biasa.
   Hasil:
-
+![no_9_3worker](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_9_3_worker(RPS=2155.92).png)
+Didapatkan Request per Second = 2155.92
 - 2. #### Untuk 2 worker matikan salah 1 worker dengan ```service nginx stop```.
   Hasil:
-
+![no_9_2worker](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_9_2_worker(LUGNER,LAWINE)_(RPS=1901.21).png)
+Didapatkan Request per Second = 1901.21
 - 3. #### Untuk 1 worker matikan 2 worker dengan ```service nginx stop```.
   Hasil:
-
+![no_9_1worker](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_9_1_worker(LUGNER)_(RPS=2107.88).png)
+Didapatkan Request per Second = 2107.88
 # Nomor 10
 Selanjutnya coba tambahkan konfigurasi autentikasi di LB dengan dengan kombinasi username: “netics” dan password: “ajkyyy”, dengan yyy merupakan kode kelompok. Terakhir simpan file “htpasswd” nya di /etc/nginx/rahasisakita/
 
