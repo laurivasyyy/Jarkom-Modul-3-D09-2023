@@ -585,7 +585,8 @@ d. Analisis
 ab -n 200 -c 10 http://www.granz.channel.d09.com/ 
 ```
 - ### Round Robin: Default algoritma untuk load balancer adalah round robin, sehingga tidak perlu menambahkan apa-apa di upstream.
-  Hasil:
+  Hasil: ![no_8_rr](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_8_round_robin(RPS=1773.68).png)
+  Didapatkan Request per Second = 1773.68
 - ### Least Conn:
   ```
   upstream php {
@@ -595,7 +596,8 @@ ab -n 200 -c 10 http://www.granz.channel.d09.com/
     	server 10.26.3.3; #IP Lawine
 	}
   ```
-  Hasil:
+  Hasil: ![no_8_lc](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_8_least_conn(RPS=2115.98).png)
+  Didapatkan Request per Second = 2115.98
 - ### IP Hash:
   ```
   upstream php {
@@ -605,7 +607,8 @@ ab -n 200 -c 10 http://www.granz.channel.d09.com/
     	server 10.26.3.3; #IP Lawine
 	}
   ```
-  Hasil:
+  Hasil: ![no_8_ip_hash](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_8_IP_hash(RPS=2198.50).png)
+  Didapatkan Request per Second = 2198.50
 - ### Generic Hash:
   ```
   upstream php {
@@ -615,7 +618,8 @@ ab -n 200 -c 10 http://www.granz.channel.d09.com/
     	server 10.26.3.3; #IP Lawine
 	}
   ```
-  Hasil:
+  Hasil: ![no_8_gen_hash](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_8_generic_hash(RPS=2168.94).png)
+  Didapatkan Request per Second = 2168.94
 # Nomor 9
 Dengan menggunakan algoritma Round Robin, lakukan testing dengan menggunakan 3 worker, 2 worker, dan 1 worker sebanyak 100 request dengan 10 request/second, kemudian tambahkan grafiknya pada grimoire. 
 
