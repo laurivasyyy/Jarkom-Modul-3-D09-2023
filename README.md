@@ -868,7 +868,10 @@ POST /auth/register:
   ```
   ab -n 100 -c 10 -p register.json -T application/json http://10.26.4.1/api/auth/register
   ```
-  Hasil:
+  Hasil Response:
+  ![no_15_response](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_15_A_response.png)
+  Hasil Testing:
+  ![no_15_testing](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_15_A_testing.png)
 
 # Nomor 16
 POST /auth/login:
@@ -881,7 +884,10 @@ POST /auth/login:
   ```
   ab -n 100 -c 10 -p register.json -T application/json http://10.26.4.1:80/api/auth/login
   ```
-  Hasil:
+  Hasil Response:
+  ![no_16_response](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_16_RESPONSE.png)
+  Hasil Testing:
+  ![no_16_testing](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_16_TESTING.png)
 
 # Nomor 17
 GET /me:
@@ -898,8 +904,11 @@ GET /me:
   ```
   curl -X GET -H "Content-Type:application/json" -H "Authorization:Bearer $token" http://10.26.4.1:80/api/me
   ```
-  Hasil:
-
+  Hasil Response:
+  ![no_17_response](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_17_response.png)
+  Hasil Testing:
+  ![no_17_testing](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_17_testing.png)
+  
 # Nomor 18
 Untuk memastikan ketiganya bekerja sama secara adil untuk mengatur Riegel Channel maka implementasikan Proxy Bind pada Eisen untuk mengaitkan IP dari Frieren, Flamme, dan Fern.
 
@@ -964,12 +973,42 @@ sebanyak tiga percobaan dan lakukan testing sebanyak 100 request dengan 10 reque
   ```
   
 Berikut adalah hasil yang didapatkan dari 3 script pengaturan:
+Script default
+```
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+```
+Hasil: ![no_19_scriptD](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_19_script1.png)
 Script 1
-Hasil:
+```
+pm = dynamic
+pm.max_children = 15
+pm.start_servers = 5
+pm.min_spare_servers = 3
+pm.max_spare_servers = 10
+```
+Hasil:  ![no_19_script2](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_19_script2.png)
 Script 2
-Hasil:
+```
+pm = dynamic
+pm.max_children = 30
+pm.start_servers = 7
+pm.min_spare_servers = 5
+pm.max_spare_servers = 15
+```
+Hasil: ![no_19_script3](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_19_script3.png)
 Script 3     
-Hasil:
+```
+pm = dynamic
+pm.max_children = 75
+pm.start_servers = 10
+pm.min_spare_servers = 5
+pm.max_spare_servers = 20
+```
+Hasil: ![no_19_script4](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_19_script4.png)
 
 # Nomor 20
 Nampaknya hanya menggunakan PHP-FPM tidak cukup untuk meningkatkan performa dari worker maka implementasikan Least-Conn pada Eisen. Untuk testing kinerja dari worker tersebut dilakukan sebanyak 100 request dengan 10 request/second.
@@ -988,4 +1027,5 @@ Nampaknya hanya menggunakan PHP-FPM tidak cukup untuk meningkatkan performa dari
   ```
   ab -n 100 -c 10 -p register.json -T application/json http://www.riegel.canyon.d09.com/api/auth/login
   ```
-Hasil:
+Hasil dengan script 3: 
+Hasil: ![no_20](https://github.com/laurivasyyy/Jarkom-Modul-3-D09-2023/blob/main/src/no_20_dengan_script4.png)
